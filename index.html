@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f7f6f2" />
+  <title>拾光 · 我的相片集</title>
+  <style>
+    :root { color-scheme: light; --paper:#f7f6f2; --ink:#24251f; --muted:#898981; --line:#e7e5de; --accent:#68765c; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif; }
+    button, input, textarea { font:inherit; }
+    .shell { width:min(1120px, calc(100% - 48px)); margin:auto; }
+    header { height:84px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
+    .brand { display:flex; align-items:center; gap:11px; font-size:16px; letter-spacing:.12em; font-weight:650; }
+    .brand-mark { width:29px; height:29px; display:grid; place-items:center; border:1px solid #c9cabc; border-radius:50%; color:var(--accent); font-size:15px; }
+    .top-note { color:var(--muted); font-size:12px; letter-spacing:.08em; }
+    .intro { padding:70px 0 42px; display:flex; justify-content:space-between; align-items:flex-end; gap:30px; }
+    .eyebrow { color:var(--accent); font-size:11px; letter-spacing:.22em; text-transform:uppercase; margin-bottom:16px; }
+    h1 { margin:0; font-family:Georgia,"Songti SC",serif; font-size:clamp(36px,5vw,56px); font-weight:400; letter-spacing:.04em; }
+    .subtitle { color:#77786f; margin:13px 0 0; font-size:14px; line-height:1.8; }
+    .upload { flex:none; display:flex; align-items:center; gap:10px; background:var(--ink); color:white; border:0; padding:14px 20px; border-radius:3px; cursor:pointer; font-size:13px; transition:background .2s, transform .2s; }
+    .upload:hover { background:var(--accent); transform:translateY(-1px); }
+    .upload svg { width:16px; height:16px; }
+    .toolbar { display:flex; justify-content:space-between; align-items:center; padding:17px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line); color:var(--muted); font-size:12px; }
+    .count { color:#52534b; letter-spacing:.04em; }
+    .grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:34px 24px; padding:30px 0 80px; }
+    .card { min-width:0; animation:appear .35s ease both; }
+    @keyframes appear { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+    .photo-wrap { position:relative; background:#e9e8e1; overflow:hidden; aspect-ratio:4/3; }
+    .photo { width:100%; height:100%; display:block; object-fit:cover; transition:transform .5s; }
+    .card:hover .photo { transform:scale(1.025); }
+    .remove { position:absolute; top:10px; right:10px; width:30px; height:30px; display:grid; place-items:center; border:0; border-radius:50%; background:rgba(30,31,27,.68); color:white; cursor:pointer; opacity:0; transition:opacity .2s; }
+    .card:hover .remove, .remove:focus-visible { opacity:1; }
+    .remove svg { width:14px; height:14px; }
+    .caption { width:100%; min-height:48px; padding:14px 1px 8px; resize:vertical; border:0; border-bottom:1px solid transparent; outline:none; background:transparent; color:#41423b; font-size:13px; line-height:1.7; }
+    .caption::placeholder { color:#aaa99f; }
+    .caption:focus { border-bottom-color:#b7bdad; }
+    .empty { grid-column:1/-1; min-height:270px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; border:1px dashed #d8d7cf; color:var(--muted); }
+    .empty-icon { width:43px; height:43px; display:grid; place-items:center; border:1px solid #d8d7cf; border-radius:50%; margin-bottom:17px; color:var(--accent); }
+    .empty-icon svg { width:19px; height:19px; }
+    .empty strong { font-family:Georgia,"Songti SC",serif; font-size:18px; font-weight:400; color:#505149; }
+    .empty p { margin:9px 0 0; font-size:12px; }
+    footer { border-top:1px solid var(--line); padding:20px 0 30px; color:#a09f96; font-size:11px; text-align:center; letter-spacing:.08em; }
+    #fileInput { display:none; }
+    @media(max-width:760px) { .grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:25px 16px; } .intro { padding:52px 0 34px; } }
+    @media(max-width:520px) { .shell { width:calc(100% - 32px); } header { height:68px; } .top-note { display:none; } .intro { align-items:flex-start; flex-direction:column; gap:24px; } .upload { width:100%; justify-content:center; } .grid { grid-template-columns:1fr; gap:24px; padding-top:22px; } .photo-wrap { aspect-ratio:1.18; } .remove { opacity:1; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand"><span class="brand-mark">拾</span><span>拾 光</span></div>
+      <div class="top-note">把喜欢的日常，慢慢收集起来</div>
+    </header>
+    <main>
+      <section class="intro">
+        <div><div class="eyebrow">A LITTLE MEMORY BOOK</div><h1>留住每一刻</h1><p class="subtitle">那些闪闪发光的日常，值得被好好收藏。</p></div>
+        <button class="upload" id="uploadButton" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4a1 1 0 001 1h14a1 1 0 001-1v-4"/></svg>
+          上传照片
+        </button>
+        <input id="fileInput" type="file" accept="image/*" multiple />
+      </section>
+      <div class="toolbar"><span class="count" id="count">0 张照片</span><span>点击照片下方，写下这一刻</span></div>
+      <section class="grid" id="gallery" aria-live="polite"></section>
+    </main>
+    <footer>MADE OF LITTLE MOMENTS</footer>
+  </div>
+  <script>
+    const input = document.getElementById('fileInput');
+    const gallery = document.getElementById('gallery');
+    const count = document.getElementById('count');
+    const emptyMarkup = `<div class="empty"><div class="empty-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"/><circle cx="9" cy="10" r="1.7"/><path d="m5 17 5-4 3 2 3-4 3 3"/></svg></div><strong>你的故事，从一张照片开始</strong><p>点击右上角上传照片，收藏生活里的小确幸</p></div>`;
+    document.getElementById('uploadButton').addEventListener('click', () => input.click());
+    input.addEventListener('change', () => {
+      [...input.files].filter(file => file.type.startsWith('image/')).forEach(addPhoto);
+      input.value = '';
+    });
+    function updateCount() {
+      const total = gallery.querySelectorAll('.card').length;
+      count.textContent = `${total} 张照片`;
+      if (!total) gallery.innerHTML = emptyMarkup;
+    }
+    function addPhoto(file) {
+      const url = URL.createObjectURL(file);
+      const card = document.createElement('article');
+      card.className = 'card';
+      const wrap = document.createElement('div'); wrap.className = 'photo-wrap';
+      const img = document.createElement('img'); img.className = 'photo'; img.src = url; img.alt = file.name;
+      const remove = document.createElement('button'); remove.className = 'remove'; remove.type = 'button'; remove.setAttribute('aria-label', '移除照片');
+      remove.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 7h14M10 11v6m4-6v6M6.5 7l.8 13h9.4l.8-13M9 7V4h6v3"/></svg>';
+      remove.addEventListener('click', () => { URL.revokeObjectURL(url); card.remove(); updateCount(); });
+      const caption = document.createElement('textarea'); caption.className = 'caption'; caption.rows = 1; caption.placeholder = '写下这张照片的故事…'; caption.setAttribute('aria-label', '照片文字信息');
+      wrap.append(img, remove); card.append(wrap, caption);
+      if (gallery.querySelector('.empty')) gallery.innerHTML = '';
+      gallery.prepend(card); updateCount();
+    }
+    updateCount();
+  </script>
+</body>
+</html>
